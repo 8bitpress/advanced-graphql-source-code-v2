@@ -1,4 +1,8 @@
-import { ApolloGateway, IntrospectAndCompose } from "@apollo/gateway";
+import {
+  ApolloGateway,
+  IntrospectAndCompose,
+  RemoteGraphQLDataSource
+} from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
@@ -7,7 +11,18 @@ function initGateway(httpServer) {
     supergraphSdl: new IntrospectAndCompose({
       subgraphs: [{ name: "accounts", url: "http://localhost:4001" }],
       pollIntervalInMs: 1000
-    })
+    }),
+    buildService({ url }) {
+      return new RemoteGraphQLDataSource({
+        url,
+        willSendRequest({ request, context }) {
+          request.http.headers.set(
+            "user",
+            context.user ? JSON.stringify(context.user) : null
+          );
+        }
+      });
+    }
   });
 
   return new ApolloServer({

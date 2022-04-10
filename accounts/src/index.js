@@ -15,7 +15,11 @@ const typeDefs = gql(
 );
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({ typeDefs, resolvers })
+  schema: buildSubgraphSchema({ typeDefs, resolvers }),
+  context: ({ req }) => {
+    const user = req.headers.user ? JSON.parse(req.headers.user) : null;
+    return { user };
+  }
 });
 
 const { url } = await server.listen({ port });
