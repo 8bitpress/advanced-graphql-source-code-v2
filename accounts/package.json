@@ -14,7 +14,8 @@
     "@apollo/subgraph": "^2.0.0-preview.12",
     "apollo-server": "^3.6.7",
     "dotenv": "^16.0.0",
-    "graphql": "^16.3.0"
+    "graphql": "^16.3.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
