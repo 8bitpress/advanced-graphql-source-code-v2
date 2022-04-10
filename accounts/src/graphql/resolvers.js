@@ -13,7 +13,8 @@ const resolvers = {
   },
 
   Query: {
-    viewer() {
+    viewer(root, args, { user }) {
+      console.log(user);
       return accounts[0];
     }
   }

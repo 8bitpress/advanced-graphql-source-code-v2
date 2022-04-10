@@ -12,7 +12,11 @@ function initGateway(httpServer) {
 
   return new ApolloServer({
     gateway,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: ({ req }) => {
+      const user = req.user || null;
+      return { user };
+    }
   });
 }
 
