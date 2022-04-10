@@ -26,6 +26,16 @@ const resolvers = {
       }
       return null;
     }
+  },
+
+  Mutation: {
+    createAccount(root, { data: { email, password } }) {
+      return auth0.createUser({
+        connection: "Username-Password-Authentication",
+        email,
+        password
+      });
+    }
   }
 };
 

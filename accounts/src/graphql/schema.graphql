@@ -14,6 +14,16 @@ type Account @key(fields: "id") {
   email: String!
 }
 
+"""
+Provides data to create a new account.
+"""
+input CreateAccountInput {
+  "The new account's email (must be unique)."
+  email: String!
+  "The new account's password."
+  password: String!
+}
+
 type Query {
   "Retrieves a single account by ID."
   account(id: ID!): Account!
@@ -21,4 +31,9 @@ type Query {
   accounts: [Account]
   "Retrieves the account of the currently logged-in user."
   viewer: Account
+}
+
+type Mutation {
+  "Creates a new account."
+  createAccount(data: CreateAccountInput!): Account!
 }
