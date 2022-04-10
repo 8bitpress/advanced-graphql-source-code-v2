@@ -1,20 +1,19 @@
 {
-  "name": "marked-gateway",
+  "name": "marked-accounts",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config -e env,js ./src/index.js"
+    "dev": "nodemon -r dotenv/config -e env,graphql,js ./src/index.js"
   },
   "keywords": [],
   "author": "mandiwise",
   "license": "MIT",
   "dependencies": {
-    "@apollo/gateway": "^2.0.0-preview.12",
-    "apollo-server-express": "^3.6.7",
+    "@apollo/subgraph": "^2.0.0-preview.12",
+    "apollo-server": "^3.6.7",
     "dotenv": "^16.0.0",
-    "express": "^4.17.3",
     "graphql": "^16.3.0"
   },
   "devDependencies": {

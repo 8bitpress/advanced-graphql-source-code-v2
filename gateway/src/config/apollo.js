@@ -1,24 +1,17 @@
-import { ApolloServer, gql } from "apollo-server-express";
+import { ApolloGateway, IntrospectAndCompose } from "@apollo/gateway";
+import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
 function initGateway(httpServer) {
-  const typeDefs = gql`
-    type Query {
-      hello: String
-    }
-  `;
-
-  const resolvers = {
-    Query: {
-      hello() {
-        return "world";
-      }
-    }
-  };
+  const gateway = new ApolloGateway({
+    supergraphSdl: new IntrospectAndCompose({
+      subgraphs: [{ name: "accounts", url: "http://localhost:4001" }],
+      pollIntervalInMs: 1000
+    })
+  });
 
   return new ApolloServer({
-    typeDefs,
-    resolvers,
+    gateway,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
   });
 }
