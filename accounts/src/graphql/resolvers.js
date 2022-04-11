@@ -39,6 +39,14 @@ const resolvers = {
         password
       });
     },
+    async deleteAccount(root, { id }) {
+      try {
+        await auth0.deleteUser({ id });
+        return true;
+      } catch {
+        return false;
+      }
+    },
     updateAccountEmail(root, { data: { id, email } }) {
       return auth0.updateUser({ id }, { email });
     },
