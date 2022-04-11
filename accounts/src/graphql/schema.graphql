@@ -24,6 +24,29 @@ input CreateAccountInput {
   password: String!
 }
 
+"""
+Provides data to update an existing account's email.
+"""
+input UpdateAccountEmailInput {
+  "The unique ID associated with the account."
+  id: ID!
+  "The updated account email."
+  email: String!
+}
+
+"""
+Provides data to update an existing account's password. A current password and
+new password are required to update a password.
+"""
+input UpdateAccountPasswordInput {
+  "The unique ID associated with the account."
+  id: ID!
+  "The updated account password."
+  newPassword: String!
+  "The existing account password."
+  password: String!
+}
+
 type Query {
   "Retrieves a single account by ID."
   account(id: ID!): Account!
@@ -36,4 +59,8 @@ type Query {
 type Mutation {
   "Creates a new account."
   createAccount(data: CreateAccountInput!): Account!
+  "Updates an account's email."
+  updateAccountEmail(data: UpdateAccountEmailInput!): Account!
+  "Updates an account's password."
+  updateAccountPassword(data: UpdateAccountPasswordInput!): Account!
 }

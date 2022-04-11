@@ -1,4 +1,7 @@
+import { UserInputError } from "apollo-server";
+
 import auth0 from "../config/auth0.js";
+import getToken from "../utils/getToken.js";
 
 const resolvers = {
   Account: {
@@ -35,6 +38,20 @@ const resolvers = {
         email,
         password
       });
+    },
+    updateAccountEmail(root, { data: { id, email } }) {
+      return auth0.updateUser({ id }, { email });
+    },
+    async updateAccountPassword(root, { data: { id, newPassword, password } }) {
+      const user = await auth0.getUser({ id });
+
+      try {
+        await getToken(user.email, password);
+      } catch {
+        throw new UserInputError("Email or existing password is incorrect.");
+      }
+
+      return auth0.updateUser({ id }, { password: newPassword });
     }
   }
 };
