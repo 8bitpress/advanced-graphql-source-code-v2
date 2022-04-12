@@ -27,18 +27,18 @@ const resolvers = {
   },
 
   Mutation: {
-    createAccount(root, { data: { email, password } }, { dataSources }) {
+    createAccount(root, { input: { email, password } }, { dataSources }) {
       return dataSources.accountsAPI.createAccount(email, password);
     },
     deleteAccount(root, { id }, { dataSources }) {
       return dataSources.accountsAPI.deleteAccount(id);
     },
-    updateAccountEmail(root, { data: { id, email } }, { dataSources }) {
+    updateAccountEmail(root, { input: { id, email } }, { dataSources }) {
       return dataSources.accountsAPI.updateAccountEmail(id, email);
     },
     updateAccountPassword(
       root,
-      { data: { id, newPassword, password } },
+      { input: { id, newPassword, password } },
       { dataSources }
     ) {
       return dataSources.accountsAPI.updateAccountPassword(

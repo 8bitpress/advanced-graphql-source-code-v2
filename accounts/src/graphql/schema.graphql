@@ -58,11 +58,11 @@ type Query {
 
 type Mutation {
   "Creates a new account."
-  createAccount(data: CreateAccountInput!): Account!
+  createAccount(input: CreateAccountInput!): Account!
   "Deletes an account."
   deleteAccount(id: ID!): Boolean!
   "Updates an account's email."
-  updateAccountEmail(data: UpdateAccountEmailInput!): Account!
+  updateAccountEmail(input: UpdateAccountEmailInput!): Account!
   "Updates an account's password."
-  updateAccountPassword(data: UpdateAccountPasswordInput!): Account!
+  updateAccountPassword(input: UpdateAccountPasswordInput!): Account!
 }
