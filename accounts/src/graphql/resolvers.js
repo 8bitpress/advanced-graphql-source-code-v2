@@ -1,12 +1,7 @@
-import { UserInputError } from "apollo-server";
-
-import auth0 from "../config/auth0.js";
-import getToken from "../utils/getToken.js";
-
 const resolvers = {
   Account: {
-    __resolveReference(reference) {
-      return auth0.getUser({ id: reference.id });
+    __resolveReference(reference, { dataSources }) {
+      return dataSources.accountsAPI.getAccountById(reference.id);
     },
     id(account) {
       return account.user_id;
@@ -17,49 +12,40 @@ const resolvers = {
   },
 
   Query: {
-    account(root, { id }) {
-      return auth0.getUser({ id });
+    account(root, { id }, { dataSources }) {
+      return dataSources.accountsAPI.getAccountById(id);
     },
-    accounts() {
-      return auth0.getUsers();
+    accounts(root, args, { dataSources }) {
+      return dataSources.accountsAPI.getAccounts();
     },
-    viewer(root, args, { user }) {
-      if (user && user.sub) {
-        return auth0.getUser({ id: user.sub });
+    viewer(root, args, { dataSources, user }) {
+      if (user?.sub) {
+        return dataSources.accountsAPI.getAccountById(user.sub);
       }
       return null;
     }
   },
 
   Mutation: {
-    createAccount(root, { data: { email, password } }) {
-      return auth0.createUser({
-        connection: "Username-Password-Authentication",
-        email,
+    createAccount(root, { data: { email, password } }, { dataSources }) {
+      return dataSources.accountsAPI.createAccount(email, password);
+    },
+    deleteAccount(root, { id }, { dataSources }) {
+      return dataSources.accountsAPI.deleteAccount(id);
+    },
+    updateAccountEmail(root, { data: { id, email } }, { dataSources }) {
+      return dataSources.accountsAPI.updateAccountEmail(id, email);
+    },
+    updateAccountPassword(
+      root,
+      { data: { id, newPassword, password } },
+      { dataSources }
+    ) {
+      return dataSources.accountsAPI.updateAccountPassword(
+        id,
+        newPassword,
         password
-      });
-    },
-    async deleteAccount(root, { id }) {
-      try {
-        await auth0.deleteUser({ id });
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    updateAccountEmail(root, { data: { id, email } }) {
-      return auth0.updateUser({ id }, { email });
-    },
-    async updateAccountPassword(root, { data: { id, newPassword, password } }) {
-      const user = await auth0.getUser({ id });
-
-      try {
-        await getToken(user.email, password);
-      } catch {
-        throw new UserInputError("Email or existing password is incorrect.");
-      }
-
-      return auth0.updateUser({ id }, { password: newPassword });
+      );
     }
   }
 };
