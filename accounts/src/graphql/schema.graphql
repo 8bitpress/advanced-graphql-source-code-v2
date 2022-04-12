@@ -2,6 +2,8 @@ extend schema
   @link(url: "https://specs.apollo.dev/federation/v2.0",
     import: ["@key", "@requires", "@shareable", "@provides", "@external"])
 
+scalar DateTime
+
 """
 An account is unique Auth0 user.
 """
@@ -9,7 +11,7 @@ type Account @key(fields: "id") {
   "The unique ID associated with the account."
   id: ID!
   "The date and time the account was created."
-  createdAt: String!
+  createdAt: DateTime!
   "The email associated with the account (must be unique)."
   email: String!
 }

@@ -1,0 +1,15 @@
+{
+  "name": "marked-shared",
+  "version": "1.0.0",
+  "description": "The shared dependencies for the the Marked app.",
+  "type": "module",
+  "main": "src/index.js",
+  "keywords": [],
+  "author": "mandiwise",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^3.6.7",
+    "graphql": "^16.3.0",
+    "validator": "^13.7.0"
+  }
+}

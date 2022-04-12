@@ -1,7 +1,7 @@
 {
   "name": "marked-gateway",
   "version": "1.0.0",
-  "description": "",
+  "description": "The server for the gateway service in the Marked app.",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
