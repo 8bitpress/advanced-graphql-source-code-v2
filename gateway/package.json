@@ -11,7 +11,7 @@
   "author": "mandiwise",
   "license": "MIT",
   "dependencies": {
-    "@apollo/gateway": "^2.0.0-preview.12",
+    "@apollo/gateway": "^2.0.1",
     "apollo-server-express": "^3.6.7",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
