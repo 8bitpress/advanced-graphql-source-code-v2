@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import { ApolloServer, gql } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 
+import { authDirectives } from "../../shared/src/index.js";
 import AccountsDataSource from "./graphql/dataSources/AccountsDataSource.js";
 import auth0 from "./config/auth0.js";
 import resolvers from "./graphql/resolvers.js";
@@ -12,12 +13,17 @@ import resolvers from "./graphql/resolvers.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT;
 
-const typeDefs = gql(
-  readFileSync(resolve(__dirname, "./graphql/schema.graphql"), "utf-8")
+const { authDirectivesTypeDefs, authDirectivesTransformer } = authDirectives();
+const subgraphTypeDefs = readFileSync(
+  resolve(__dirname, "./graphql/schema.graphql"),
+  "utf-8"
 );
+const typeDefs = gql(`${subgraphTypeDefs}\n${authDirectivesTypeDefs}`);
+let subgraphSchema = buildSubgraphSchema({ typeDefs, resolvers });
+subgraphSchema = authDirectivesTransformer(subgraphSchema);
 
 const server = new ApolloServer({
-  schema: buildSubgraphSchema({ typeDefs, resolvers }),
+  schema: subgraphSchema,
   context: ({ req }) => {
     const user = req.headers.user ? JSON.parse(req.headers.user) : null;
     return { user };

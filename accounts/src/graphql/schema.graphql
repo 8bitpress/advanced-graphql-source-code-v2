@@ -51,9 +51,9 @@ input UpdateAccountPasswordInput {
 
 type Query {
   "Retrieves a single account by ID."
-  account(id: ID!): Account!
+  account(id: ID!): Account! @private
   "Retrieves a list of accounts."
-  accounts: [Account]
+  accounts: [Account] @private
   "Retrieves the account of the currently logged-in user."
   viewer: Account
 }
@@ -62,9 +62,9 @@ type Mutation {
   "Creates a new account."
   createAccount(input: CreateAccountInput!): Account!
   "Deletes an account."
-  deleteAccount(id: ID!): Boolean!
+  deleteAccount(id: ID!): Boolean! @owner(argumentName: "id")
   "Updates an account's email."
-  updateAccountEmail(input: UpdateAccountEmailInput!): Account!
+  updateAccountEmail(input: UpdateAccountEmailInput!): Account! @owner(argumentName: "input.id")
   "Updates an account's password."
-  updateAccountPassword(input: UpdateAccountPasswordInput!): Account!
+  updateAccountPassword(input: UpdateAccountPasswordInput!): Account! @owner(argumentName: "input.id")
 }
