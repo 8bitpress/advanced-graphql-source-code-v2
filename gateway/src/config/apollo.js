@@ -9,7 +9,10 @@ import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 function initGateway(httpServer) {
   const gateway = new ApolloGateway({
     supergraphSdl: new IntrospectAndCompose({
-      subgraphs: [{ name: "accounts", url: "http://localhost:4001" }],
+      subgraphs: [
+        { name: "accounts", url: "http://localhost:4001" },
+        { name: "profiles", url: "http://localhost:4002" }
+      ],
       pollIntervalInMs: 1000
     }),
     buildService({ url }) {
