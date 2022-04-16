@@ -1,0 +1,41 @@
+extend schema
+    @link(url: "https://specs.apollo.dev/federation/v2.0",
+          import: ["@key", "@requires", "@shareable", "@provides", "@external"])
+
+"""
+An ISO 8601-encoded UTC date string.
+"""
+scalar DateTime
+
+type Account @key(fields: "id") {
+  id: ID!
+  "Metadata about the user that owns the account."
+  profile: Profile
+}
+
+"""
+A profile contains metadata about a specific user.
+"""
+type Profile @key(fields: "id") {
+  "The unique ID of the user's profile."
+  id: ID!
+  "The date and time the profile was created."
+  createdAt: DateTime!
+  "The Auth0 account tied to this profile."
+  account: Account!
+  "The full name of the user."
+  fullName: String
+  "A tag-like list of topics of interest to the user."
+  interests: [String]
+  "Whether the currently authenticated user has another user in their network."
+  isInNetwork: Boolean
+  "The unique username of the user."
+  username: String!
+}
+
+type Query {
+  "Retrieves a single profile by username."
+  profile(username: String!): Profile!
+  "Retrieves a list of profiles."
+  profiles: [Profile]
+}

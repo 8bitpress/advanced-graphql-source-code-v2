@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 import { ApolloServer, gql } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 
-import { authDirective } from "../../shared/src/index.js";
+import { authDirectives } from "../../shared/src/index.js";
 import initMongoose from "./config/mongoose.js";
 import Profile from "./models/Profile.js";
 import ProfilesDataSource from "./graphql/dataSources/ProfilesDataSource.js";
@@ -14,7 +14,7 @@ import resolvers from "./graphql/resolvers.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT;
 
-const { authDirectivesTypeDefs, authDirectivesTransformer } = authDirective();
+const { authDirectivesTypeDefs, authDirectivesTransformer } = authDirectives();
 const subgraphTypeDefs = readFileSync(
   resolve(__dirname, "./graphql/schema.graphql"),
   "utf-8"

@@ -6,6 +6,18 @@ class ProfilesDataSource extends DataSource {
     super();
     this.Profile = Profile;
   }
+
+  getProfile(filter) {
+    return this.Profile.findOne(filter).exec();
+  }
+
+  getProfileById(id) {
+    return this.Profile.findById(id);
+  }
+
+  getProfiles() {
+    return this.Profile.find({}).exec();
+  }
 }
 
 export default ProfilesDataSource;
