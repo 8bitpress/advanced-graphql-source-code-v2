@@ -5,7 +5,10 @@ import { readFileSync } from "fs";
 import { ApolloServer, gql } from "apollo-server";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 
-import { authDirectives } from "../../shared/src/index.js";
+import {
+  authDirectives,
+  restoreReferenceResolvers
+} from "../../shared/src/index.js";
 import initMongoose from "./config/mongoose.js";
 import Profile from "./models/Profile.js";
 import ProfilesDataSource from "./graphql/dataSources/ProfilesDataSource.js";
@@ -22,6 +25,7 @@ const subgraphTypeDefs = readFileSync(
 const typeDefs = gql(`${subgraphTypeDefs}\n${authDirectivesTypeDefs}`);
 let subgraphSchema = buildSubgraphSchema({ typeDefs, resolvers });
 subgraphSchema = authDirectivesTransformer(subgraphSchema);
+restoreReferenceResolvers(subgraphSchema, resolvers);
 
 const server = new ApolloServer({
   schema: subgraphSchema,
