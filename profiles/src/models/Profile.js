@@ -15,7 +15,7 @@ const profileSchema = new mongoose.Schema({
     trim: true
   },
   interests: [String],
-  network: [mongoose.Schema.Types.ObjectId],
+  network: [String],
   username: {
     type: String,
     required: true,

@@ -14,19 +14,22 @@ const resolvers = {
   },
 
   Profile: {
-    __resolveReference(reference, { dataSources }, info) {
+    __resolveReference(reference, { dataSources }) {
       return dataSources.profilesAPI.getProfileById(reference.id);
     },
-    account(profile, args, context, info) {
+    account(profile) {
       return { id: profile.accountId };
     },
-    id(profile, args, context, info) {
+    network(profile, args, { dataSources }) {
+      return dataSources.profilesAPI.getNetworkProfiles(profile.network);
+    },
+    id(profile) {
       return profile._id;
     },
-    isInNetwork(profile, args, { dataSources, user }, info) {
+    isInNetwork(profile, args, { dataSources, user }) {
       return dataSources.profilesAPI.checkViewerHasInNetwork(
         user.sub,
-        profile._id
+        profile.accountId
       );
     }
   },
@@ -46,8 +49,25 @@ const resolvers = {
   },
 
   Mutation: {
+    addToNetwork(
+      root,
+      { input: { accountId, networkMemberId } },
+      { dataSources }
+    ) {
+      return dataSources.profilesAPI.addToNetwork(accountId, networkMemberId);
+    },
     createProfile(root, { input }, { dataSources }) {
       return dataSources.profilesAPI.createProfile(input);
+    },
+    removeFromNetwork(
+      root,
+      { input: { accountId, networkMemberId } },
+      { dataSources }
+    ) {
+      return dataSources.profilesAPI.removeFromNetwork(
+        accountId,
+        networkMemberId
+      );
     },
     deleteProfile(root, { accountId }, { dataSources }) {
       return dataSources.profilesAPI.deleteProfile(accountId);

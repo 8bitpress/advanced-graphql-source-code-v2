@@ -29,6 +29,8 @@ type Profile @key(fields: "id") {
   interests: [String]
   "Whether the currently authenticated user has another user in their network."
   isInNetwork: Boolean
+  "Other users that have been added to the user's network."
+  network: [Profile]
   "The unique username of the user."
   username: String!
 }
@@ -45,6 +47,16 @@ input CreateProfileInput {
   interests: [String]
   "The new user's username (must be unique)."
   username: String!
+}
+
+"""
+Provides the unique ID of an existing profile to add or remove from a network.
+"""
+input NetworkMemberInput {
+  "The unique Auth0 ID of the user that is updating their network."
+  accountId: ID!
+  "The unique profile ID of the user to be added or removed from a network."
+  networkMemberId: ID!
 }
 
 """
@@ -69,12 +81,18 @@ type Query {
 }
 
 type Mutation {
+  "Allows one user to add another user to their network."
+  addToNetwork(input: NetworkMemberInput!): Profile!
+    @owner(argumentName: "input.accountId")
   "Creates a new profile tied to an Auth0 account."
   createProfile(input: CreateProfileInput!): Profile!
     @owner(argumentName: "input.accountId")
   "Deletes a user profile."
   deleteProfile(accountId: ID!): Boolean! 
     @owner(argumentName: "accountId")
+  "Allows one user to remove another user from their network."
+  removeFromNetwork(input: NetworkMemberInput!): Profile! 
+    @owner(argumentName: "input.accountId")
   "Updates a user's profile details."
   updateProfile(input: UpdateProfileInput!): Profile!
     @owner(argumentName: "input.accountId")

@@ -21,16 +21,46 @@ class ProfilesDataSource extends DataSource {
     return newProfile.save();
   }
 
+  async checkViewerHasInNetwork(viewerAccountId, accountId) {
+    const viewerProfile = await this.Profile.findOne({
+      accountId: viewerAccountId
+    })
+      .select("network")
+      .exec();
+
+    return viewerProfile.network.includes(accountId);
+  }
+
+  getNetworkProfiles(network) {
+    return this.Profile.find({ accountId: { $in: network } }).exec();
+  }
+
   getProfile(filter) {
     return this.Profile.findOne(filter).exec();
   }
 
   getProfileById(id) {
-    return this.Profile.findById(id);
+    return this.Profile.findById(id).exec();
   }
 
   getProfiles() {
     return this.Profile.find({}).exec();
+  }
+
+  async addToNetwork(accountId, accountIdToFollow) {
+    return await this.Profile.findOneAndUpdate(
+      { accountId },
+      { $addToSet: { network: accountIdToFollow } },
+      { new: true }
+    );
+  }
+
+  async removeFromNetwork(accountId, accountIdToFollow) {
+    return await this.Profile.findOneAndUpdate(
+      { accountId },
+      { $pull: { network: accountIdToFollow } },
+      { new: true }
+    );
   }
 
   async updateProfile(accountId, updatedProfileData) {
