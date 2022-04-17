@@ -43,6 +43,12 @@ const resolvers = {
     profiles(root, args, { dataSources }) {
       return dataSources.profilesAPI.getProfiles();
     }
+  },
+
+  Mutation: {
+    createProfile(parent, { input }, { dataSources }) {
+      return dataSources.profilesAPI.createProfile(input);
+    }
   }
 };
 

@@ -64,7 +64,9 @@ type Mutation {
   "Deletes an account."
   deleteAccount(id: ID!): Boolean! @owner(argumentName: "id")
   "Updates an account's email."
-  updateAccountEmail(input: UpdateAccountEmailInput!): Account! @owner(argumentName: "input.id")
+  updateAccountEmail(input: UpdateAccountEmailInput!): Account!
+    @owner(argumentName: "input.id")
   "Updates an account's password."
-  updateAccountPassword(input: UpdateAccountPasswordInput!): Account! @owner(argumentName: "input.id")
+  updateAccountPassword(input: UpdateAccountPasswordInput!): Account!
+    @owner(argumentName: "input.id")
 }

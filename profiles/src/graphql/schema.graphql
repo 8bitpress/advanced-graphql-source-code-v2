@@ -33,9 +33,29 @@ type Profile @key(fields: "id") {
   username: String!
 }
 
+"""
+Provides data to create a new user profile.
+"""
+input CreateProfileInput {
+  "The new user's unique Auth0 ID."
+  accountId: ID!
+  "The new user's full name."
+  fullName: String
+  "A tag-like list of topics of interest to the user."
+  interests: [String]
+  "The new user's username (must be unique)."
+  username: String!
+}
+
 type Query {
   "Retrieves a single profile by username."
-  profile(username: String!): Profile!
+  profile(username: String!): Profile! @private
   "Retrieves a list of profiles."
-  profiles: [Profile]
+  profiles: [Profile] @private
+}
+
+type Mutation {
+  "Creates a new profile tied to an Auth0 account."
+  createProfile(input: CreateProfileInput!): Profile!
+    @owner(argumentName: "input.accountId")
 }

@@ -7,6 +7,20 @@ class ProfilesDataSource extends DataSource {
     this.Profile = Profile;
   }
 
+  _formatTags(tags) {
+    return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
+  }
+
+  createProfile(profile) {
+    if (profile.interests) {
+      const formattedTags = this._formatTags(profile.interests);
+      profile.interests = formattedTags;
+    }
+
+    const newProfile = new this.Profile(profile);
+    return newProfile.save();
+  }
+
   getProfile(filter) {
     return this.Profile.findOne(filter).exec();
   }
