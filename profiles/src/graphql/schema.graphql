@@ -47,6 +47,20 @@ input CreateProfileInput {
   username: String!
 }
 
+"""
+Provides data to update an existing profile.
+"""
+input UpdateProfileInput {
+  "The new user's unique Auth0 ID."
+  accountId: ID!
+  "The updated full name of the user."
+  fullName: String
+  "An updated list of tag-like topics of interest to the user."
+  interests: [String]
+  "The updated unique username of the user."
+  username: String
+}
+
 type Query {
   "Retrieves a single profile by username."
   profile(username: String!): Profile! @private
@@ -57,5 +71,11 @@ type Query {
 type Mutation {
   "Creates a new profile tied to an Auth0 account."
   createProfile(input: CreateProfileInput!): Profile!
+    @owner(argumentName: "input.accountId")
+  "Deletes a user profile."
+  deleteProfile(accountId: ID!): Boolean! 
+    @owner(argumentName: "accountId")
+  "Updates a user's profile details."
+  updateProfile(input: UpdateProfileInput!): Profile!
     @owner(argumentName: "input.accountId")
 }

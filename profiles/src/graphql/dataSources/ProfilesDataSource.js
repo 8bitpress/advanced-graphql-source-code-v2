@@ -32,6 +32,39 @@ class ProfilesDataSource extends DataSource {
   getProfiles() {
     return this.Profile.find({}).exec();
   }
+
+  async updateProfile(accountId, updatedProfileData) {
+    if (
+      !updatedProfileData ||
+      (updatedProfileData && Object.keys(updatedProfileData).length === 0)
+    ) {
+      throw new UserInputError("You must supply some profile data to update.");
+    }
+
+    if (updatedProfileData.interests) {
+      const formattedTags = this._formatTags(updatedProfileData.interests);
+      updatedProfileData.interests = formattedTags;
+    }
+
+    return await this.Profile.findOneAndUpdate(
+      { accountId },
+      updatedProfileData,
+      {
+        new: true
+      }
+    );
+  }
+
+  async deleteProfile(accountId) {
+    try {
+      await this.Profile.findOneAndDelete({
+        accountId
+      }).exec();
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export default ProfilesDataSource;

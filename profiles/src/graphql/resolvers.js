@@ -46,8 +46,14 @@ const resolvers = {
   },
 
   Mutation: {
-    createProfile(parent, { input }, { dataSources }) {
+    createProfile(root, { input }, { dataSources }) {
       return dataSources.profilesAPI.createProfile(input);
+    },
+    deleteProfile(root, { accountId }, { dataSources }) {
+      return dataSources.profilesAPI.deleteProfile(accountId);
+    },
+    updateProfile(root, { input: { accountId, ...rest } }, { dataSources }) {
+      return dataSources.profilesAPI.updateProfile(accountId, rest);
     }
   }
 };
