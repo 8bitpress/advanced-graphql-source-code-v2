@@ -45,6 +45,9 @@ const resolvers = {
     },
     profiles(root, args, { dataSources }) {
       return dataSources.profilesAPI.getProfiles();
+    },
+    searchProfiles(root, { query }, { dataSources }) {
+      return dataSources.profilesAPI.searchProfiles(query);
     }
   },
 

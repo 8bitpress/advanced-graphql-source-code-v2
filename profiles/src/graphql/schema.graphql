@@ -78,6 +78,11 @@ type Query {
   profile(username: String!): Profile! @private
   "Retrieves a list of profiles."
   profiles: [Profile] @private
+  "Performs a search of user profiles. Results are available in descending order by relevance only."
+  searchProfiles(
+    "The text string to search for in usernames or full names."
+    query: String!
+  ): [Profile] @private
 }
 
 type Mutation {
