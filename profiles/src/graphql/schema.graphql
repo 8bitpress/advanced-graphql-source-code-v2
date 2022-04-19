@@ -14,6 +14,34 @@ type Account @key(fields: "id") {
 }
 
 """
+Sorting options for profile connections.
+"""
+enum ProfileOrderBy {
+  "Order profiles ascending by creation time."
+  CREATED_AT_ASC
+  "Order profiles descending by creation time."
+  CREATED_AT_DESC
+  "Order profiles ascending by username."
+  USERNAME_ASC
+  "Order profiles descending by username."
+  USERNAME_DESC
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @shareable {
+  "The cursor to continue from when paginating forward."
+  endCursor: String
+  "Whether there are more items when paginating forward."
+  hasNextPage: Boolean!
+  "Whether there are more items when paginating backward."
+  hasPreviousPage: Boolean!
+  "The cursor to continue from them paginating backward."
+  startCursor: String
+}
+
+"""
 A profile contains metadata about a specific user.
 """
 type Profile @key(fields: "id") {
@@ -30,9 +58,35 @@ type Profile @key(fields: "id") {
   "Whether the currently authenticated user has another user in their network."
   isInNetwork: Boolean
   "Other users that have been added to the user's network."
-  network: [Profile]
+  network (
+    first: Int
+    after: String
+    last: Int
+    before: String
+    orderBy: ProfileOrderByInput = USERNAME_ASC
+  ): ProfileConnection
   "The unique username of the user."
   username: String!
+}
+
+"""
+A list of profile edges with pagination information.
+"""
+type ProfileConnection {
+  "A list of profile edges."
+  edges: [ProfileEdge]
+  "Information to assist with pagination."
+  pageInfo: PageInfo!
+}
+
+"""
+A single profile node with its cursor.
+"""
+type ProfileEdge {
+  "A cursor for use in pagination."
+  cursor: ID!
+  "A profile at the end of an edge."
+  node: Profile!
 }
 
 """
