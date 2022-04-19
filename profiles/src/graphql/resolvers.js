@@ -21,7 +21,10 @@ const resolvers = {
       return { id: profile.accountId };
     },
     network(profile, args, { dataSources }) {
-      return dataSources.profilesAPI.getNetworkProfiles(profile.network);
+      return dataSources.profilesAPI.getNetworkProfiles({
+        ...args,
+        network: profile.network
+      });
     },
     id(profile) {
       return profile._id;

@@ -1,14 +1,32 @@
 import { DataSource } from "apollo-datasource";
 import { UserInputError } from "apollo-server";
 
+import { Pagination } from "../../../../shared/src/index.js";
+
 class ProfilesDataSource extends DataSource {
   constructor({ Profile }) {
     super();
     this.Profile = Profile;
+    this.pagination = new Pagination(Profile);
   }
 
   _formatTags(tags) {
     return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
+  }
+
+  _getProfileSort(sortEnum) {
+    let sort = {};
+    const sortArgs = sortEnum.split("_");
+    const direction = sortArgs.pop();
+    const field = sortArgs
+      .map(arg => arg.toLowerCase())
+      .map((arg, i) =>
+        i === 0 ? arg : arg.charAt(0).toUpperCase() + arg.slice(1)
+      )
+      .join("");
+    sort[field] = direction === "DESC" ? -1 : 1;
+
+    return sort;
   }
 
   createProfile(profile) {
@@ -31,8 +49,14 @@ class ProfilesDataSource extends DataSource {
     return viewerProfile.network.includes(accountId);
   }
 
-  getNetworkProfiles(network) {
-    return this.Profile.find({ accountId: { $in: network } }).exec();
+  async getNetworkProfiles({ after, before, first, last, orderBy, network }) {
+    const sort = this._getProfileSort(orderBy);
+    const filter = { accountId: { $in: network } };
+    const queryArgs = { after, before, first, last, filter, sort };
+    const edges = await this.pagination.getEdges(queryArgs);
+    const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
   }
 
   getProfile(filter) {
