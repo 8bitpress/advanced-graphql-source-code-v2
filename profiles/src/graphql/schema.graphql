@@ -131,12 +131,20 @@ type Query {
   "Retrieves a single profile by username."
   profile(username: String!): Profile! @private
   "Retrieves a list of profiles."
-  profiles: [Profile] @private
+  profiles(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: ProfileOrderBy = USERNAME_ASC
+  ): ProfileConnection @private
   "Performs a search of user profiles. Results are available in descending order by relevance only."
   searchProfiles(
+    after: String
+    first: Int
     "The text string to search for in usernames or full names."
     query: String!
-  ): [Profile] @private
+  ): ProfileConnection @private
 }
 
 type Mutation {

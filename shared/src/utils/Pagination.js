@@ -8,6 +8,7 @@ class Pagination {
   // Get documents and cast them into the correct edge/node shape
   async getEdges(queryArgs) {
     const { after, before, first, last, filter = {}, sort = {} } = queryArgs;
+    const isSearch = this._isSearchQuery(sort);
     let edges;
 
     if (!first && !last) {
@@ -26,9 +27,26 @@ class Pagination {
       throw new UserInputError(
         "Maximum record request for `first` and `last` arguments is 100."
       );
+    } else if (!first && isSearch) {
+      throw new UserInputError("Search queries may only be paginated forward.");
     }
 
-    if (first) {
+    if (isSearch) {
+      const operator = this._getOperator(sort);
+      const pipeline = await this._getSearchPipeline(
+        after,
+        filter,
+        first,
+        operator,
+        sort
+      );
+
+      const docs = await this.Model.aggregate(pipeline);
+
+      edges = docs.length
+        ? docs.map(doc => ({ node: doc, cursor: doc._id }))
+        : [];
+    } else if (first) {
       const operator = this._getOperator(sort);
       const queryDoc = after
         ? await this._getFilterWithCursor(after, filter, operator, sort)
@@ -114,7 +132,42 @@ class Pagination {
   }
 
   // Create the aggregation pipeline to paginate a full-text search
-  async _getSearchPipeline(fromCursorId, filter, first, operator, sort) {}
+  async _getSearchPipeline(fromCursorId, filter, first, operator, sort) {
+    const textSearchPipeline = [
+      { $match: filter },
+      { $addFields: { score: { $meta: "textScore" } } },
+      { $sort: sort }
+    ];
+
+    if (fromCursorId) {
+      const fromDoc = await this.Model.findOne({
+        _id: fromCursorId,
+        $text: { $search: filter.$text.$search }
+      })
+        .select({ score: { $meta: "textScore" } })
+        .exec();
+
+      if (!fromDoc) {
+        throw new UserInputError(`No record found for ID '${fromCursorId}'`);
+      }
+
+      textSearchPipeline.push({
+        $match: {
+          $or: [
+            { score: { [operator]: fromDoc._doc.score } },
+            {
+              score: { $eq: fromDoc._doc.score },
+              _id: { [operator]: fromCursorId }
+            }
+          ]
+        }
+      });
+    }
+
+    textSearchPipeline.push({ $limit: first });
+
+    return textSearchPipeline;
+  }
 
   // Reverse the sort direction when queries need to look in the opposite
   // direction of the set sort order (e.g. next/previous page checks)
@@ -132,44 +185,93 @@ class Pagination {
   // Get the correct comparison operator based on the sort order
   _getOperator(sort, options = {}) {
     const orderArr = Object.values(sort);
-    return orderArr.length && orderArr[0] === -1 ? "$lt" : "$gt";
+    const checkPreviousTextScore = options?.checkPreviousTextScore
+      ? options.checkPreviousTextScore
+      : false;
+    let operator;
+
+    if (this._isSearchQuery(sort)) {
+      operator = checkPreviousTextScore ? "$gt" : "$lt";
+    } else {
+      operator = orderArr.length && orderArr[0] === -1 ? "$lt" : "$gt";
+      // Could use an array method here like 'includes' or 'some'
+    }
+
+    return operator;
   }
 
   // Determine if a query is a full-text search based on the sort
   // expression
-  _isSearchQuery(sort) {}
+  _isSearchQuery(sort) {
+    const fieldArr = Object.keys(sort);
+    return fieldArr.length && fieldArr[0] === "score";
+  }
 
   // Check if a next page of results is available
   async _getHasNextPage(endCursor, filter, sort) {
+    const isSearch = this._isSearchQuery(sort);
     const operator = this._getOperator(sort);
-    const queryDoc = await this._getFilterWithCursor(
-      endCursor,
-      filter,
-      operator,
-      sort
-    );
+    let nextPage;
 
-    const nextPage = await this.Model.findOne(queryDoc)
-      .select("_id")
-      .sort(sort);
+    if (isSearch) {
+      const pipeline = await this._getSearchPipeline(
+        endCursor,
+        filter,
+        1,
+        operator,
+        sort
+      );
+
+      const result = await this.Model.aggregate(pipeline);
+      nextPage = result.length;
+    } else {
+      const queryDoc = await this._getFilterWithCursor(
+        endCursor,
+        filter,
+        operator,
+        sort
+      );
+
+      nextPage = await this.Model.findOne(queryDoc).select("_id").sort(sort);
+    }
 
     return Boolean(nextPage);
   }
 
   // Check if a previous page of results is available
   async _getHasPreviousPage(startCursor, filter, sort) {
-    const reverseSort = this._reverseSortDirection(sort);
-    const operator = this._getOperator(reverseSort);
-    const queryDoc = await this._getFilterWithCursor(
-      startCursor,
-      filter,
-      operator,
-      reverseSort
-    );
+    const isSearch = this._isSearchQuery(sort);
+    let prevPage;
 
-    const prevPage = await this.Model.findOne(queryDoc)
-      .select("_id")
-      .sort(reverseSort);
+    if (isSearch) {
+      const operator = this._getOperator(sort, {
+        checkPreviousTextScore: true
+      });
+
+      const pipeline = await this._getSearchPipeline(
+        startCursor,
+        filter,
+        1,
+        operator,
+        sort
+      );
+
+      const result = await this.Model.aggregate(pipeline);
+      prevPage = result.length;
+    } else {
+      const reverseSort = this._reverseSortDirection(sort);
+      const operator = this._getOperator(reverseSort);
+      const queryDoc = await this._getFilterWithCursor(
+        startCursor,
+        filter,
+        operator,
+        reverseSort
+      );
+
+      prevPage = await this.Model.findOne(queryDoc)
+        .select("_id")
+        .sort(reverseSort);
+    }
 
     return Boolean(prevPage);
   }

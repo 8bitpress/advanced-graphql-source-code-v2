@@ -47,10 +47,17 @@ const resolvers = {
       return profile;
     },
     profiles(root, args, { dataSources }) {
-      return dataSources.profilesAPI.getProfiles();
+      return dataSources.profilesAPI.getProfiles(args);
     },
     searchProfiles(root, { query }, { dataSources }) {
       return dataSources.profilesAPI.searchProfiles(query);
+    },
+    searchProfiles(parent, { after, first, query }, { dataSources }) {
+      return dataSources.profilesAPI.searchProfiles({
+        after,
+        first,
+        searchString: query
+      });
     }
   },
 
