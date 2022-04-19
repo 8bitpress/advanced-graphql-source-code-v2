@@ -63,7 +63,7 @@ type Profile @key(fields: "id") {
     after: String
     last: Int
     before: String
-    orderBy: ProfileOrderByInput = USERNAME_ASC
+    orderBy: ProfileOrderBy = USERNAME_ASC
   ): ProfileConnection
   "The unique username of the user."
   username: String!
