@@ -65,6 +65,25 @@ class Pagination {
 
   // Get pagination information
   async getPageInfo(edges, queryArgs) {
+    if (edges.length) {
+      const { filter = {}, sort = {} } = queryArgs;
+      const startCursor = this._getStartCursor(edges);
+      const endCursor = this._getEndCursor(edges);
+      const hasNextPage = await this._getHasNextPage(endCursor, filter, sort);
+      const hasPreviousPage = await this._getHasPreviousPage(
+        startCursor,
+        filter,
+        sort
+      );
+
+      return {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor
+      };
+    }
+
     return {
       hasNextPage: false,
       hasPreviousPage: false,
@@ -121,16 +140,57 @@ class Pagination {
   _isSearchQuery(sort) {}
 
   // Check if a next page of results is available
-  async _getHasNextPage(endCursor, filter, sort) {}
+  async _getHasNextPage(endCursor, filter, sort) {
+    const operator = this._getOperator(sort);
+    const queryDoc = await this._getFilterWithCursor(
+      endCursor,
+      filter,
+      operator,
+      sort
+    );
+
+    const nextPage = await this.Model.findOne(queryDoc)
+      .select("_id")
+      .sort(sort);
+
+    return Boolean(nextPage);
+  }
 
   // Check if a previous page of results is available
-  async _getHasPreviousPage(startCursor, filter, sort) {}
+  async _getHasPreviousPage(startCursor, filter, sort) {
+    const reverseSort = this._reverseSortDirection(sort);
+    const operator = this._getOperator(reverseSort);
+    const queryDoc = await this._getFilterWithCursor(
+      startCursor,
+      filter,
+      operator,
+      reverseSort
+    );
+
+    const prevPage = await this.Model.findOne(queryDoc)
+      .select("_id")
+      .sort(reverseSort);
+
+    return Boolean(prevPage);
+  }
 
   // Get the ID of the first document in the paging window
-  _getStartCursor(edges) {}
+  _getStartCursor(edges) {
+    if (!edges.length) {
+      return null;
+    }
+
+    return edges[0].cursor;
+  }
 
   // Get the ID of the last document in the paging window
-  _getEndCursor(edges) {}
+  _getEndCursor(edges) {
+    if (!edges.length) {
+      return null;
+    }
+
+    return edges[edges.length - 1].cursor;
+  }
 }
 
 export default Pagination;
