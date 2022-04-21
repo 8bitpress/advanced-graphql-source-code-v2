@@ -11,7 +11,8 @@ function initGateway(httpServer) {
     supergraphSdl: new IntrospectAndCompose({
       subgraphs: [
         { name: "accounts", url: "http://localhost:4001" },
-        { name: "profiles", url: "http://localhost:4002" }
+        { name: "profiles", url: "http://localhost:4002" },
+        { name: "bookmarks", url: "http://localhost:4003" }
       ],
       pollIntervalInMs: 1000
     }),
