@@ -14,7 +14,7 @@ const resolvers = {
   },
 
   Profile: {
-    __resolveReference(reference, { dataSources }) {
+    __resolveReference(reference, { dataSources, user }) {
       if (user?.sub) {
         return dataSources.profilesAPI.getProfileById(reference.id);
       }
