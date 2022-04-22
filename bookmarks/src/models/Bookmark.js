@@ -15,9 +15,6 @@ const bookmarkSchema = new mongoose.Schema({
     default: false,
     required: true
   },
-  notes: {
-    type: String
-  },
   tags: [
     {
       type: String
