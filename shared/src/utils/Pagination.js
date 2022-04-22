@@ -141,8 +141,8 @@ class Pagination {
 
     if (fromCursorId) {
       const fromDoc = await this.Model.findOne({
-        _id: fromCursorId,
-        $text: { $search: filter.$text.$search }
+        ...filter,
+        _id: fromCursorId
       })
         .select({ score: { $meta: "textScore" } })
         .exec();
