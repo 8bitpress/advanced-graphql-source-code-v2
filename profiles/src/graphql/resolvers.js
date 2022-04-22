@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server";
+import { ApolloError, UserInputError } from "apollo-server";
 
 import { DateTimeType } from "../../../shared/src/index.js";
 
@@ -15,7 +15,10 @@ const resolvers = {
 
   Profile: {
     __resolveReference(reference, { dataSources }) {
-      return dataSources.profilesAPI.getProfileById(reference.id);
+      if (user?.sub) {
+        return dataSources.profilesAPI.getProfileById(reference.id);
+      }
+      throw new ApolloError("Not authorized!");
     },
     account(profile) {
       return { id: profile.accountId };

@@ -1,11 +1,16 @@
+import { ApolloError } from "apollo-server";
+
 import { DateTimeType } from "../../../shared/src/index.js";
 
 const resolvers = {
   DateTime: DateTimeType,
 
   Account: {
-    __resolveReference(reference, { dataSources }) {
-      return dataSources.accountsAPI.getAccountById(reference.id);
+    __resolveReference(reference, { dataSources, user }) {
+      if (user?.sub) {
+        return dataSources.accountsAPI.getAccountById(reference.id);
+      }
+      throw new ApolloError("Not authorized!");
     },
     id(account) {
       return account.user_id;
