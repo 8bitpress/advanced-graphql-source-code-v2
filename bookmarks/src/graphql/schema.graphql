@@ -68,6 +68,7 @@ type Account @key(fields: "id") {
 
 type Profile @key(fields: "account { id }") {
   account: Account
+  interests: [String] @external
   """
   A list of bookmarks created by the user.
 
@@ -80,6 +81,13 @@ type Profile @key(fields: "account { id }") {
     last: Int
     orderBy: BookmarkOrderBy = CREATED_AT_DESC
   ): BookmarkConnection
+  """
+  A list of recommended bookmarks for a user, based on their interests.
+  """
+  recommendedBookmarks(
+    after: String, 
+    first: Int
+  ): BookmarkConnection @requires(fields: "interests")
 }
 
 """

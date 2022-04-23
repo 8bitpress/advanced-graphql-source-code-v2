@@ -59,6 +59,31 @@ class BookmarksDataSource extends DataSource {
     }).exec();
   }
 
+  async getRecommendedBookmarks(accountId, interests, { after, first }) {
+    const sort = { score: { $meta: "textScore" }, _id: -1 };
+    const searchString = interests
+      .map(interest =>
+        interest.includes("-")
+          ? `\\"${interest.split("-").join(" ")}\\"`
+          : interest
+      )
+      .join(" ");
+    const filter = {
+      $and: [
+        {
+          $text: { $search: searchString },
+          ownerAccountId: { $ne: accountId },
+          private: false
+        }
+      ]
+    };
+    const queryArgs = { after, first, filter, sort };
+    const edges = await this.pagination.getEdges(queryArgs);
+    const pageInfo = await this.pagination.getPageInfo(edges, queryArgs);
+
+    return { edges, pageInfo };
+  }
+
   async getUserBookmarks(
     accountId,
     { after, before, first, last, orderBy, userId = null }

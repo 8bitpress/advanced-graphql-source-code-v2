@@ -21,6 +21,13 @@ const resolvers = {
         ...args,
         userId: user?.sub ? user.sub : null
       });
+    },
+    recommendedBookmarks({ account, interests }, args, { dataSources }) {
+      return dataSources.bookmarksAPI.getRecommendedBookmarks(
+        account.id,
+        interests,
+        args
+      );
     }
   },
 
