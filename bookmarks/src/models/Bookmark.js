@@ -29,7 +29,7 @@ const bookmarkSchema = new mongoose.Schema({
   }
 });
 
-bookmarkSchema.index({ title: "text", notes: "text" });
+bookmarkSchema.index({ title: "text" });
 
 const Bookmark = mongoose.model("Bookmark", bookmarkSchema);
 
