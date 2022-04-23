@@ -16,7 +16,11 @@ const resolvers = {
   Profile: {
     __resolveReference(reference, { dataSources, user }) {
       if (user?.sub) {
-        return dataSources.profilesAPI.getProfileById(reference.id);
+        return reference.id
+          ? dataSources.profilesAPI.getProfileById(reference.id)
+          : dataSources.profilesAPI.getProfile({
+              accountId: reference.account.id
+            });
       }
       throw new ApolloError("Not authorized!");
     },
@@ -45,7 +49,7 @@ const resolvers = {
       const profile = await dataSources.profilesAPI.getProfile({ username });
 
       if (!profile) {
-        throw new UserInputError("Profile does not exist.");
+        throw new UserInputError("Profile not available.");
       }
       return profile;
     },

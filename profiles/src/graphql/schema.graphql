@@ -44,7 +44,7 @@ type PageInfo @shareable {
 """
 A profile contains metadata about a specific user.
 """
-type Profile @key(fields: "id") {
+type Profile @key(fields: "id") @key(fields: "account { id }") {
   "The unique ID of the user's profile."
   id: ID!
   "The date and time the profile was created."

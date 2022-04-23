@@ -1,3 +1,109 @@
 extend schema
     @link(url: "https://specs.apollo.dev/federation/v2.0",
           import: ["@key", "@requires", "@shareable", "@provides", "@external"])
+
+"""
+An ISO 8601-encoded UTC date string.
+"""
+scalar DateTime
+
+"""
+A well-formatted URL string.
+"""
+scalar URL
+
+"""
+Sorting options for bookmark connections.
+"""
+enum BookmarkOrderBy {
+  "Order bookmarks ascending by creation time."
+  CREATED_AT_ASC
+  "Order bookmarks descending by creation time."
+  CREATED_AT_DESC
+}
+
+"""
+A bookmark contains content authored by a user.
+"""
+type Bookmark {
+  "The unique ID of the bookmark."
+  id: ID!
+  "The date and time the bookmark was created."
+  createdAt: DateTime!
+  "The profile of the user who authored the bookmark."
+  owner: Profile!
+  "Whether a bookmark has been marked as private."
+  private: Boolean!
+  "User-applied tags for the bookmark."
+  tags: [String]
+  "A title to describe the bookmarked content."
+  title: String
+  "The URL of the page to be bookmarked."
+  url: URL!
+}
+
+"""
+A list of bookmark edges with pagination information.
+"""
+type BookmarkConnection {
+  "A list of bookmark edges."
+  edges: [BookmarkEdge]
+  "Information to assist with pagination."
+  pageInfo: PageInfo!
+}
+
+"""
+A single bookmark node with its cursor.
+"""
+type BookmarkEdge {
+  "A cursor for use in pagination."
+  cursor: ID!
+  "A bookmark at the end of an edge."
+  node: Bookmark!
+}
+
+type Account @key(fields: "id") {
+  id: ID!
+}
+
+type Profile @key(fields: "account { id }") {
+  account: Account
+  """
+  A list of bookmarks created by the user.
+
+  Private bookmarks will be hidden for non-owners.
+  """
+  bookmarks(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: BookmarkOrderBy = CREATED_AT_DESC
+  ): BookmarkConnection
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @shareable {
+  "The cursor to continue from when paginating forward."
+  endCursor: String
+  "Whether there are more items when paginating forward."
+  hasNextPage: Boolean!
+  "Whether there are more items when paginating backward."
+  hasPreviousPage: Boolean!
+  "The cursor to continue from them paginating backward."
+  startCursor: String
+}
+
+type Query {
+  "Retrieves a single bookmark by ID."
+  bookmark(id: ID!): Bookmark!
+  "Provides a search string to query relevant bookmarks."
+  searchBookmarks(
+    after: String
+    first: Int
+    "The text string to search for in bookmark title or notes."
+    query: String!
+  ): BookmarkConnection
+}
