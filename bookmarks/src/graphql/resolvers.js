@@ -51,6 +51,28 @@ const resolvers = {
   Mutation: {
     createBookmark(root, { input }, { dataSources }) {
       return dataSources.bookmarksAPI.createBookmark(input);
+    },
+    deleteBookmark(root, { input: { id } }, { dataSources, user }, info) {
+      const userId = user?.sub ? user.sub : null;
+      return dataSources.bookmarksAPI.deleteBookmark(id, userId);
+    },
+    async updateBookmark(
+      root,
+      { input: { id, ...rest } },
+      { dataSources, user }
+    ) {
+      const userId = user?.sub ? user.sub : null;
+      const bookmark = await dataSources.bookmarksAPI.updateBookmark(
+        id,
+        rest,
+        userId
+      );
+
+      if (!bookmark) {
+        throw new UserInputError("Bookmark cannot be updated.");
+      }
+
+      return bookmark;
     }
   }
 };

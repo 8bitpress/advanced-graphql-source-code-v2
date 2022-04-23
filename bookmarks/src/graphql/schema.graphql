@@ -112,6 +112,34 @@ input CreateBookmarkInput {
   url: URL!
 }
 
+"""
+Provides data to delete a bookmark.
+"""
+input DeleteBookmarkInput {
+  "The unique ID of the bookmark."
+  id: ID!
+  "The Auth0 ID of the user who created the bookmark."
+  ownerAccountId: ID!
+}
+
+"""
+Provides data to update an existing bookmark.
+"""
+input UpdateBookmarkInput {
+  "The unique ID of the bookmark."
+  id: ID!
+  "The Auth0 ID of the user who created the bookmark."
+  ownerAccountId: ID!
+  "The updated privacy setting for the bookmark."
+  private: Boolean
+  "An updated user-applied tags for the bookmark."
+  tags: [String]
+  "The updated title to describe the bookmarked content."
+  title: String
+  "The updated URL of the bookmarked page."
+  url: URL
+}
+
 type Query {
   "Retrieves a single bookmark by ID."
   bookmark(id: ID!): Bookmark!
@@ -127,5 +155,11 @@ type Query {
 type Mutation {
   "Creates a new bookmark."
   createBookmark(input: CreateBookmarkInput!): Bookmark! 
+    @owner(argumentName: "input.ownerAccountId")
+  "Deletes a bookmark."
+  deleteBookmark(input: DeleteBookmarkInput!): Boolean! 
+    @owner(argumentName: "input.ownerAccountId")
+  "Updates a bookmark."
+  updateBookmark(input: UpdateBookmarkInput!): Bookmark! 
     @owner(argumentName: "input.ownerAccountId")
 }

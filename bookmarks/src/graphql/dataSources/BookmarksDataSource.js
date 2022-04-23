@@ -98,6 +98,45 @@ class BookmarksDataSource extends DataSource {
 
     return { edges, pageInfo };
   }
+
+  async updateBookmark(
+    id,
+    { ownerAccountId: _, ...updatedBookmarkData },
+    userId = null
+  ) {
+    if (
+      !updatedBookmarkData ||
+      (updatedBookmarkData && Object.keys(updatedBookmarkData).length === 0)
+    ) {
+      throw new UserInputError("You must supply some bookmark data to update.");
+    }
+
+    if (updatedBookmarkData) {
+      const formattedTags = this._formatTags(updatedBookmarkData.tags);
+      updatedBookmarkData.tags = formattedTags;
+    }
+
+    return this.Bookmark.findOneAndUpdate(
+      { _id: id, ownerAccountId: userId },
+      updatedBookmarkData,
+      {
+        new: true
+      }
+    );
+  }
+
+  async deleteBookmark(id, userId = null) {
+    try {
+      const deletedBookmark = await this.Bookmark.findOneAndDelete({
+        _id: id,
+        ownerAccountId: userId
+      }).exec();
+
+      return deletedBookmark ? true : false;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export default BookmarksDataSource;
