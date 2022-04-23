@@ -46,6 +46,12 @@ const resolvers = {
         userId: user?.sub ? user.sub : null
       });
     }
+  },
+
+  Mutation: {
+    createBookmark(root, { input }, { dataSources }) {
+      return dataSources.bookmarksAPI.createBookmark(input);
+    }
   }
 };
 

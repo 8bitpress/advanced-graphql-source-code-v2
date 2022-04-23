@@ -10,6 +10,10 @@ class BookmarksDataSource extends DataSource {
     this.pagination = new Pagination(Bookmark);
   }
 
+  _formatTags(tags) {
+    return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
+  }
+
   _getBookmarkSort(sortEnum) {
     let sort = {};
     const sortArgs = sortEnum.split("_");
@@ -23,6 +27,27 @@ class BookmarksDataSource extends DataSource {
     sort[field] = direction === "DESC" ? -1 : 1;
 
     return sort;
+  }
+
+  async createBookmark(bookmark) {
+    const existingBookmarkForUrl = await this.Bookmark.findOne({
+      ownerAccountId: bookmark.ownerAccountId,
+      url: bookmark.url
+    }).exec();
+
+    console.log(existingBookmarkForUrl);
+
+    if (existingBookmarkForUrl) {
+      throw new UserInputError("A bookmark for the URL already exists.");
+    }
+
+    if (bookmark.tags) {
+      const formattedTags = this._formatTags(bookmark.tags);
+      bookmark.tags = formattedTags;
+    }
+
+    const newBookmark = new this.Bookmark(bookmark);
+    return newBookmark.save();
   }
 
   getBookmarkById(id, userId = null) {

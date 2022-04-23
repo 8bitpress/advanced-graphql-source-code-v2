@@ -96,6 +96,22 @@ type PageInfo @shareable {
   startCursor: String
 }
 
+"""
+Provides data to create a bookmark.
+"""
+input CreateBookmarkInput {
+  "The Auth0 ID of the user who created the bookmark."
+  ownerAccountId: ID!
+  "Whether a bookmark should be marked as private."
+  private: Boolean!
+  "User-applied tags for the bookmark."
+  tags: [String]
+  "The title of the page to be bookmarked."
+  title: String
+  "The URL of the page to be bookmarked."
+  url: URL!
+}
+
 type Query {
   "Retrieves a single bookmark by ID."
   bookmark(id: ID!): Bookmark!
@@ -106,4 +122,10 @@ type Query {
     "The text string to search for in bookmark title or notes."
     query: String!
   ): BookmarkConnection
+}
+
+type Mutation {
+  "Creates a new bookmark."
+  createBookmark(input: CreateBookmarkInput!): Bookmark! 
+    @owner(argumentName: "input.ownerAccountId")
 }
