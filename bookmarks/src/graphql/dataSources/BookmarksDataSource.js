@@ -50,7 +50,7 @@ class BookmarksDataSource extends DataSource {
     return newBookmark.save();
   }
 
-  getBookmarkById(id, userId = null) {
+  getBookmarkById(id, userId) {
     return this.Bookmark.findOne({
       $or: [
         { _id: id, private: false },
@@ -86,7 +86,8 @@ class BookmarksDataSource extends DataSource {
 
   async getUserBookmarks(
     accountId,
-    { after, before, first, last, orderBy, userId = null }
+    userId,
+    { after, before, first, last, orderBy }
   ) {
     const sort = this._getBookmarkSort(orderBy);
     const filter = {
@@ -107,7 +108,7 @@ class BookmarksDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
-  async searchBookmarks({ after, first, searchString, userId = null }) {
+  async searchBookmarks(userId, { after, first, searchString }) {
     const sort = { score: { $meta: "textScore" }, _id: -1 };
     const filter = {
       $and: [
@@ -126,8 +127,8 @@ class BookmarksDataSource extends DataSource {
 
   async updateBookmark(
     id,
-    { ownerAccountId: _, ...updatedBookmarkData },
-    userId = null
+    userId,
+    { ownerAccountId: _, ...updatedBookmarkData }
   ) {
     if (
       !updatedBookmarkData ||
@@ -150,7 +151,7 @@ class BookmarksDataSource extends DataSource {
     );
   }
 
-  async deleteBookmark(id, userId = null) {
+  async deleteBookmark(id, userId) {
     try {
       const deletedBookmark = await this.Bookmark.findOneAndDelete({
         _id: id,

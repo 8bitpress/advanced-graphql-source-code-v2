@@ -17,10 +17,13 @@ const resolvers = {
 
   Profile: {
     bookmarks(profile, args, { dataSources, user }) {
-      return dataSources.bookmarksAPI.getUserBookmarks(profile.account.id, {
-        ...args,
-        userId: user?.sub ? user.sub : null
-      });
+      const userId = user?.sub ? user.sub : null;
+
+      return dataSources.bookmarksAPI.getUserBookmarks(
+        profile.account.id,
+        userId,
+        args
+      );
     },
     recommendedBookmarks({ account, interests }, args, { dataSources }) {
       return dataSources.bookmarksAPI.getRecommendedBookmarks(
@@ -46,11 +49,12 @@ const resolvers = {
       return bookmark;
     },
     searchBookmarks(root, { after, first, query }, { dataSources, user }) {
-      return dataSources.bookmarksAPI.searchBookmarks({
+      const userId = user?.sub ? user.sub : null;
+
+      return dataSources.bookmarksAPI.searchBookmarks(userId, {
         after,
         first,
-        searchString: query,
-        userId: user?.sub ? user.sub : null
+        searchString: query
       });
     }
   },
@@ -59,8 +63,9 @@ const resolvers = {
     createBookmark(root, { input }, { dataSources }) {
       return dataSources.bookmarksAPI.createBookmark(input);
     },
-    deleteBookmark(root, { input: { id } }, { dataSources, user }, info) {
+    deleteBookmark(root, { input: { id } }, { dataSources, user }) {
       const userId = user?.sub ? user.sub : null;
+
       return dataSources.bookmarksAPI.deleteBookmark(id, userId);
     },
     async updateBookmark(
@@ -71,8 +76,8 @@ const resolvers = {
       const userId = user?.sub ? user.sub : null;
       const bookmark = await dataSources.bookmarksAPI.updateBookmark(
         id,
-        rest,
-        userId
+        userId,
+        rest
       );
 
       if (!bookmark) {
