@@ -18,6 +18,7 @@ function initGateway(httpServer) {
     }),
     buildService({ url }) {
       return new RemoteGraphQLDataSource({
+        apq: true,
         url,
         willSendRequest({ request, context }) {
           request.http.headers.set(
