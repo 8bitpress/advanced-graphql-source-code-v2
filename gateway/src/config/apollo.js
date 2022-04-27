@@ -5,6 +5,7 @@ import {
 } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import depthLimit from "graphql-depth-limit";
 
 function initGateway(httpServer) {
   const gateway = new ApolloGateway({
@@ -36,7 +37,8 @@ function initGateway(httpServer) {
     context: ({ req }) => {
       const user = req.user || null;
       return { user };
-    }
+    },
+    validationRules: [depthLimit(10)]
   });
 }
 
