@@ -42,7 +42,7 @@ function initGateway(httpServer) {
     formatError: err => {
       if (
         err.message.includes("Did you mean") &&
-        process.env.NODE_ENV === "development"
+        process.env.NODE_ENV !== "development"
       ) {
         return new ApolloError("Internal server error");
       }
