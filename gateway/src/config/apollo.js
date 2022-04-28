@@ -3,7 +3,7 @@ import {
   IntrospectAndCompose,
   RemoteGraphQLDataSource
 } from "@apollo/gateway";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloError, ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import depthLimit from "graphql-depth-limit";
 
@@ -38,7 +38,17 @@ function initGateway(httpServer) {
       const user = req.user || null;
       return { user };
     },
-    validationRules: [depthLimit(10)]
+    validationRules: [depthLimit(10)],
+    formatError: err => {
+      if (
+        err.message.includes("Did you mean") &&
+        process.env.NODE_ENV === "development"
+      ) {
+        return new ApolloError("Internal server error");
+      }
+
+      return err;
+    }
   });
 }
 
