@@ -9,6 +9,7 @@ import {
   authDirectives,
   restoreReferenceResolvers
 } from "../../shared/src/index.js";
+import initDataLoaders from "./graphql/dataLoaders.js";
 import initMongoose from "./config/mongoose.js";
 import Profile from "./models/Profile.js";
 import ProfilesDataSource from "./graphql/dataSources/ProfilesDataSource.js";
@@ -31,7 +32,7 @@ const server = new ApolloServer({
   schema: subgraphSchema,
   context: ({ req }) => {
     const user = req.headers.user ? JSON.parse(req.headers.user) : null;
-    return { user };
+    return { user, loaders: initDataLoaders() };
   },
   dataSources: () => {
     return {

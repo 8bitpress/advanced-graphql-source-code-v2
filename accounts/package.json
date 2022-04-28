@@ -15,6 +15,7 @@
     "apollo-datasource": "^3.3.1",
     "apollo-server": "^3.6.7",
     "auth0": "^2.40.0",
+    "dataloader": "^2.1.0",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
     "request": "^2.88.2"

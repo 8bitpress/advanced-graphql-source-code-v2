@@ -9,6 +9,10 @@ class AccountsDataSource extends DataSource {
     this.auth0 = auth0;
   }
 
+  initialize(config) {
+    this.context = config.context;
+  }
+
   // CREATE
 
   createAccount(email, password) {
@@ -22,7 +26,7 @@ class AccountsDataSource extends DataSource {
   // READ
 
   getAccountById(id) {
-    return this.auth0.getUser({ id });
+    return this.context.loaders.accountLoader.load(id);
   }
 
   getAccounts() {

@@ -10,6 +10,10 @@ class ProfilesDataSource extends DataSource {
     this.pagination = new Pagination(Profile);
   }
 
+  initialize(config) {
+    this.context = config.context;
+  }
+
   _formatTags(tags) {
     return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
   }
@@ -60,11 +64,11 @@ class ProfilesDataSource extends DataSource {
   }
 
   getProfile(filter) {
-    return this.Profile.findOne(filter).exec();
+    return this.context.loaders.profileLoader.load(filter);
   }
 
   getProfileById(id) {
-    return this.Profile.findById(id).exec();
+    return this.context.loaders.profileLoader.load({ _id: id });
   }
 
   async getProfiles({ after, before, first, last, orderBy }) {
