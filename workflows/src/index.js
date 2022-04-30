@@ -9,6 +9,7 @@ import {
   authDirectives,
   restoreReferenceResolvers
 } from "../../shared/src/index.js";
+import initTemporalWorker from "./temporal/worker.js";
 import resolvers from "./graphql/resolvers.js";
 import WorkflowsDataSource from "./graphql/dataSources/WorkflowsDataSource.js";
 
@@ -36,6 +37,11 @@ const server = new ApolloServer({
       workflowsAPI: new WorkflowsDataSource()
     };
   }
+});
+
+initTemporalWorker().catch(error => {
+  console.error(error);
+  process.exit(1);
 });
 
 server.listen({ port }).then(({ url }) => {
