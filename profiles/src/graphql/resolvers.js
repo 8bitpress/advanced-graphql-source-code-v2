@@ -79,6 +79,9 @@ const resolvers = {
     createProfile(root, { input }, { dataSources }) {
       return dataSources.profilesAPI.createProfile(input);
     },
+    deleteProfile(root, { accountId }, { dataSources }) {
+      return dataSources.profilesAPI.deleteProfile(accountId);
+    },
     removeFromNetwork(
       root,
       { input: { accountId, networkMemberId } },
@@ -89,8 +92,8 @@ const resolvers = {
         networkMemberId
       );
     },
-    deleteProfile(root, { accountId }, { dataSources }) {
-      return dataSources.profilesAPI.deleteProfile(accountId);
+    removeUserFromNetworks(root, { accountId }, { dataSources }) {
+      return dataSources.profilesAPI.removeUserFromNetworks(accountId);
     },
     updateProfile(root, { input: { accountId, ...rest } }, { dataSources }) {
       return dataSources.profilesAPI.updateProfile(accountId, rest);

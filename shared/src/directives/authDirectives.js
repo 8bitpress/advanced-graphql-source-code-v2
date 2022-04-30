@@ -25,10 +25,13 @@ function authDirectives() {
           const ownerDirective = fieldDirectives.find(
             dir => dir.name === "owner"
           );
+          const scopeDirective = fieldDirectives.find(
+            dir => dir.name === "scope"
+          );
 
           const { resolve = defaultFieldResolver } = fieldConfig;
 
-          if (privateDirective || ownerDirective) {
+          if (privateDirective || ownerDirective || scopeDirective) {
             fieldConfig.resolve = function (source, args, context, info) {
               const privateAuthorized = privateDirective && context.user?.sub;
               const ownerArgAuthorized =
@@ -37,9 +40,18 @@ function authDirectives() {
                 get(args, ownerDirective.args.argumentName) ===
                   context.user.sub;
 
+              let scopeAuthorized = false;
+              if (scopeDirective && context.user?.scope) {
+                const tokenPermissions = context.user.scope.split(" ");
+                scopeAuthorized = scopeDirective.args.permissions.every(scope =>
+                  tokenPermissions.includes(scope)
+                );
+              }
+
               if (
                 (privateDirective && !privateAuthorized) ||
-                (ownerDirective && !ownerArgAuthorized)
+                (ownerDirective && !ownerArgAuthorized) ||
+                (scopeDirective && !scopeAuthorized)
               ) {
                 throw new ApolloError("Not authorized!");
               }

@@ -84,10 +84,8 @@ type Profile @key(fields: "account { id }") {
   """
   A list of recommended bookmarks for a user, based on their interests.
   """
-  recommendedBookmarks(
-    after: String, 
-    first: Int
-  ): BookmarkConnection @requires(fields: "interests")
+  recommendedBookmarks(after: String, first: Int): BookmarkConnection
+    @requires(fields: "interests")
 }
 
 """
@@ -162,12 +160,15 @@ type Query {
 
 type Mutation {
   "Creates a new bookmark."
-  createBookmark(input: CreateBookmarkInput!): Bookmark! 
+  createBookmark(input: CreateBookmarkInput!): Bookmark!
     @owner(argumentName: "input.ownerAccountId")
+  "Deletes all of a user's bookmarks."
+  deleteAllUserBookmarks(ownerAccountId: ID!): Boolean!
+    @scope(permissions: ["delete:bookmarks"])
   "Deletes a bookmark."
-  deleteBookmark(input: DeleteBookmarkInput!): Boolean! 
+  deleteBookmark(input: DeleteBookmarkInput!): Boolean!
     @owner(argumentName: "input.ownerAccountId")
   "Updates a bookmark."
-  updateBookmark(input: UpdateBookmarkInput!): Bookmark! 
+  updateBookmark(input: UpdateBookmarkInput!): Bookmark!
     @owner(argumentName: "input.ownerAccountId")
 }

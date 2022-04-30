@@ -151,6 +151,15 @@ class BookmarksDataSource extends DataSource {
     );
   }
 
+  async deleteAllUserBookmarks(ownerAccountId) {
+    try {
+      await this.Bookmark.deleteMany({ ownerAccountId }).exec();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async deleteBookmark(id, userId) {
     try {
       const deletedBookmark = await this.Bookmark.findOneAndDelete({

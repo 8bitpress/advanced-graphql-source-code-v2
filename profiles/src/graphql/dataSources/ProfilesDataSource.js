@@ -106,6 +106,18 @@ class ProfilesDataSource extends DataSource {
     );
   }
 
+  async removeUserFromNetworks(accountId) {
+    try {
+      await this.Profile.updateMany(
+        { network: { $in: [accountId] } },
+        { $pull: { network: accountId } }
+      ).exec();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async updateProfile(accountId, updatedProfileData) {
     if (
       !updatedProfileData ||

@@ -156,10 +156,13 @@ type Mutation {
     @owner(argumentName: "input.accountId")
   "Deletes a user profile."
   deleteProfile(accountId: ID!): Boolean! 
-    @owner(argumentName: "accountId")
+    @scope(permissions: ["delete:profiles"])
   "Allows one user to remove another user from their network."
   removeFromNetwork(input: NetworkMemberInput!): Profile! 
     @owner(argumentName: "input.accountId")
+  "Remove user from other users' networks"
+  removeUserFromNetworks(accountId: ID!): Boolean! 
+    @scope(permissions: ["update:profiles"])
   "Updates a user's profile details."
   updateProfile(input: UpdateProfileInput!): Profile!
     @owner(argumentName: "input.accountId")

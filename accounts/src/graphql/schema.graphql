@@ -62,7 +62,7 @@ type Mutation {
   "Creates a new account."
   createAccount(input: CreateAccountInput!): Account!
   "Deletes an account."
-  deleteAccount(id: ID!): Boolean! @owner(argumentName: "id")
+  deleteAccount(id: ID!): Boolean! @scope(permissions: ["delete:accounts"])
   "Updates an account's email."
   updateAccountEmail(input: UpdateAccountEmailInput!): Account!
     @owner(argumentName: "input.id")

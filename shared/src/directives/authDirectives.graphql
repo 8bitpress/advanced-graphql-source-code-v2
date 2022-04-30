@@ -13,3 +13,8 @@ directive @owner(
   """
   argumentName: String!
 ) on FIELD_DEFINITION
+
+"""
+An authenticated user must have one of these access token permissions to use the field.
+"""
+directive @scope(permissions: [String!]!) on FIELD_DEFINITION

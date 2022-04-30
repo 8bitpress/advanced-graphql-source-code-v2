@@ -63,6 +63,9 @@ const resolvers = {
     createBookmark(root, { input }, { dataSources }) {
       return dataSources.bookmarksAPI.createBookmark(input);
     },
+    deleteAllUserBookmarks(root, { ownerAccountId }, { dataSources }, info) {
+      return dataSources.bookmarksAPI.deleteAllUserBookmarks(ownerAccountId);
+    },
     deleteBookmark(root, { input: { id } }, { dataSources, user }) {
       const userId = user?.sub ? user.sub : null;
 
