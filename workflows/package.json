@@ -1,0 +1,24 @@
+{
+  "name": "marked-workflows",
+  "version": "1.0.0",
+  "description": "The server for the workflows service in the Marked app.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config -e env,graphql,js ./src/index.js"
+  },
+  "keywords": [],
+  "author": "mandiwise",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/subgraph": "^2.0.1",
+    "apollo-datasource": "^3.3.1",
+    "apollo-server": "^3.6.7",
+    "dotenv": "^16.0.0",
+    "graphql": "^16.3.0",
+    "mongoose": "^6.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
