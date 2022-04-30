@@ -16,7 +16,9 @@
     "apollo-server": "^3.6.7",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
-    "mongoose": "^6.3.0"
+    "jwt-decode": "^3.1.2",
+    "mongoose": "^6.3.0",
+    "node-fetch": "^3.2.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
