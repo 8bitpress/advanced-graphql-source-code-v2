@@ -10,7 +10,7 @@ import {
   restoreReferenceResolvers
 } from "../../shared/src/index.js";
 import resolvers from "./graphql/resolvers.js";
-import WorkflowsDataSource from "./graphql/dataSources/WorkflowDataSource.js";
+import WorkflowsDataSource from "./graphql/dataSources/WorkflowsDataSource.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT;
