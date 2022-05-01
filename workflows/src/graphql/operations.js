@@ -8,13 +8,13 @@ export const DeleteAccount = gql`
 
 export const DeleteProfile = gql`
   mutation DeleteProfile($accountId: ID!) {
-    deleteAccountProfile(accountId: $accountId)
+    deleteProfile(accountId: $accountId)
   }
 `;
 
 export const DeleteAllUserBookmarks = gql`
-  mutation DeleteAllUserBookmarks($accountId: ID!) {
-    deleteAllUserBookmarks(accountId: $accountId)
+  mutation DeleteAllUserBookmarks($ownerAccountId: ID!) {
+    deleteAllUserBookmarks(ownerAccountId: $ownerAccountId)
   }
 `;
 

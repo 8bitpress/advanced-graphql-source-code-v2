@@ -45,7 +45,7 @@ export async function deleteProfile(accountId) {
   }
 }
 
-export async function removeUserFromNetworks() {
+export async function removeUserFromNetworks(accountId) {
   const response = await apolloClient.mutate({
     mutation: RemoveUserFromNetworks,
     variables: { accountId }
@@ -58,10 +58,10 @@ export async function removeUserFromNetworks() {
   }
 }
 
-export async function deleteAllUserBookmarks(accountId) {
+export async function deleteAllUserBookmarks(ownerAccountId) {
   const response = await apolloClient.mutate({
     mutation: DeleteAllUserBookmarks,
-    variables: { accountId }
+    variables: { ownerAccountId }
   });
 
   if (response.error) {

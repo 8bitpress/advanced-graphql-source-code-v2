@@ -5,7 +5,7 @@ import { onError } from "@apollo/client/link/error/error.cjs";
 import { setContext } from "@apollo/client/link/context/context.cjs";
 import fetch from "node-fetch";
 
-function createAuthenticatedApolloClient(uri) {
+function createAuthenticatedApolloClient(uri, getToken) {
   if (!uri) {
     throw new Error(
       "Cannot make request to GraphQL API, missing `uri` argument"
