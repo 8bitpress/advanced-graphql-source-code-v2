@@ -9,15 +9,16 @@ import depthLimit from "graphql-depth-limit";
 
 function initGateway(httpServer) {
   const gateway = new ApolloGateway({
-    supergraphSdl: new IntrospectAndCompose({
-      subgraphs: [
-        { name: "accounts", url: "http://localhost:4001" },
-        { name: "profiles", url: "http://localhost:4002" },
-        { name: "bookmarks", url: "http://localhost:4003" },
-        { name: "workflows", url: "http://localhost:4004" }
-      ],
-      pollIntervalInMs: 1000
-    }),
+    // This is only used when running the gateway in unmanaged mode
+    // supergraphSdl: new IntrospectAndCompose({
+    //   subgraphs: [
+    //     { name: "accounts", url: "http://localhost:4001" },
+    //     { name: "profiles", url: "http://localhost:4002" },
+    //     { name: "bookmarks", url: "http://localhost:4003" },
+    //     { name: "workflows", url: "http://localhost:4004" }
+    //   ],
+    //   pollIntervalInMs: 1000
+    // }),
     buildService({ url }) {
       return new RemoteGraphQLDataSource({
         apq: true,
