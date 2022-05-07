@@ -1,17 +1,15 @@
 extend schema
-    @link(url: "https://specs.apollo.dev/federation/v2.0",
-          import: ["@key", "@requires", "@shareable", "@provides", "@external"])
+  @link(url: "https://specs.apollo.dev/federation/v2.0",
+        import: ["@key", "@shareable"])
+
+# SCALARS
 
 """
 An ISO 8601-encoded UTC date string.
 """
 scalar DateTime
 
-type Account @key(fields: "id") {
-  id: ID!
-  "Metadata about the user that owns the account."
-  profile: Profile
-}
+# ENUMS
 
 """
 Sorting options for profile connections.
@@ -25,6 +23,17 @@ enum ProfileOrderBy {
   USERNAME_ASC
   "Order profiles descending by username."
   USERNAME_DESC
+}
+
+# OBJECTS
+
+"""
+An account is unique Auth0 user.
+"""
+type Account @key(fields: "id") {
+  id: ID!
+  "Metadata about the user that owns the account."
+  profile: Profile
 }
 
 """
@@ -89,6 +98,8 @@ type ProfileEdge {
   node: Profile!
 }
 
+# INPUTS
+
 """
 Provides data to create a new user profile.
 """
@@ -126,6 +137,8 @@ input UpdateProfileInput {
   "The updated unique username of the user."
   username: String
 }
+
+# ROOT
 
 type Query {
   "Retrieves a single profile by username."

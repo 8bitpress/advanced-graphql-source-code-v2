@@ -1,6 +1,8 @@
 extend schema
-    @link(url: "https://specs.apollo.dev/federation/v2.0",
-          import: ["@key", "@requires", "@shareable", "@provides", "@external"])
+  @link(url: "https://specs.apollo.dev/federation/v2.0",
+        import: ["@external", "@key", "@requires", "@shareable"])
+
+# SCALARS
 
 """
 An ISO 8601-encoded UTC date string.
@@ -12,6 +14,8 @@ A well-formatted URL string.
 """
 scalar URL
 
+# ENUMS
+
 """
 Sorting options for bookmark connections.
 """
@@ -20,6 +24,15 @@ enum BookmarkOrderBy {
   CREATED_AT_ASC
   "Order bookmarks descending by creation time."
   CREATED_AT_DESC
+}
+
+# OBJECTS
+
+"""
+An account is unique Auth0 user.
+"""
+type Account @key(fields: "id") {
+  id: ID!
 }
 
 """
@@ -62,10 +75,23 @@ type BookmarkEdge {
   node: Bookmark!
 }
 
-type Account @key(fields: "id") {
-  id: ID!
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @shareable {
+  "The cursor to continue from when paginating forward."
+  endCursor: String
+  "Whether there are more items when paginating forward."
+  hasNextPage: Boolean!
+  "Whether there are more items when paginating backward."
+  hasPreviousPage: Boolean!
+  "The cursor to continue from them paginating backward."
+  startCursor: String
 }
 
+"""
+A profile contains metadata about a specific user.
+"""
 type Profile @key(fields: "account { id }") {
   account: Account
   interests: [String] @external
@@ -88,19 +114,7 @@ type Profile @key(fields: "account { id }") {
     @requires(fields: "interests")
 }
 
-"""
-Information about pagination in a connection.
-"""
-type PageInfo @shareable {
-  "The cursor to continue from when paginating forward."
-  endCursor: String
-  "Whether there are more items when paginating forward."
-  hasNextPage: Boolean!
-  "Whether there are more items when paginating backward."
-  hasPreviousPage: Boolean!
-  "The cursor to continue from them paginating backward."
-  startCursor: String
-}
+# INPUTS
 
 """
 Provides data to create a bookmark.
@@ -145,6 +159,8 @@ input UpdateBookmarkInput {
   "The updated URL of the bookmarked page."
   url: URL
 }
+
+# ROOT
 
 type Query {
   "Retrieves a single bookmark by ID."
