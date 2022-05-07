@@ -12,10 +12,10 @@ function initGateway(httpServer) {
     // This is only used when running the gateway in unmanaged mode
     // supergraphSdl: new IntrospectAndCompose({
     //   subgraphs: [
-    //     { name: "accounts", url: "http://localhost:4001" },
-    //     { name: "profiles", url: "http://localhost:4002" },
-    //     { name: "bookmarks", url: "http://localhost:4003" },
-    //     { name: "workflows", url: "http://localhost:4004" }
+    //     { name: "accounts", url: process.env.ACCOUNTS_ENDPOINT },
+    //     { name: "profiles", url: process.env.PROFILES_ENDPOINT },
+    //     { name: "bookmarks", url: process.env.BOOKMARKS_ENDPOINT },
+    //     { name: "workflows", url: process.env.WORKFLOWS_ENDPOINT }
     //   ],
     //   pollIntervalInMs: 1000
     // }),
