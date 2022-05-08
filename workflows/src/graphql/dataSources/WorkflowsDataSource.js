@@ -10,6 +10,8 @@ class WorkflowsDataSource extends DataSource {
     this.client = new WorkflowClient(connection.service);
   }
 
+  // DELETE
+
   async deleteAllUserData(accountId) {
     try {
       const handle = await this.client.start(DeleteAllUserData, {

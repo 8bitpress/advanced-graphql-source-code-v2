@@ -10,6 +10,8 @@ class BookmarksDataSource extends DataSource {
     this.pagination = new Pagination(Bookmark);
   }
 
+  // UTILS
+
   _formatTags(tags) {
     return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
   }
@@ -28,6 +30,8 @@ class BookmarksDataSource extends DataSource {
 
     return sort;
   }
+
+  // CREATE
 
   async createBookmark(bookmark) {
     const existingBookmarkForUrl = await this.Bookmark.findOne({
@@ -49,6 +53,8 @@ class BookmarksDataSource extends DataSource {
     const newBookmark = new this.Bookmark(bookmark);
     return newBookmark.save();
   }
+
+  // READ
 
   getBookmarkById(id, userId) {
     return this.Bookmark.findOne({
@@ -125,6 +131,8 @@ class BookmarksDataSource extends DataSource {
     return { edges, pageInfo };
   }
 
+  // UPDATE
+
   async updateBookmark(
     id,
     userId,
@@ -150,6 +158,8 @@ class BookmarksDataSource extends DataSource {
       }
     );
   }
+
+  // DELETE
 
   async deleteAllUserBookmarks(ownerAccountId) {
     try {

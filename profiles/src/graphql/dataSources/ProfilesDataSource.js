@@ -14,6 +14,8 @@ class ProfilesDataSource extends DataSource {
     this.context = config.context;
   }
 
+  // UTILS
+
   _formatTags(tags) {
     return tags.map(tag => tag.replace(/\s+/g, "-").toLowerCase());
   }
@@ -33,6 +35,8 @@ class ProfilesDataSource extends DataSource {
     return sort;
   }
 
+  // CREATE
+
   createProfile(profile) {
     if (profile.interests) {
       const formattedTags = this._formatTags(profile.interests);
@@ -42,6 +46,8 @@ class ProfilesDataSource extends DataSource {
     const newProfile = new this.Profile(profile);
     return newProfile.save();
   }
+
+  // READ
 
   async checkViewerHasInNetwork(viewerAccountId, accountId) {
     const viewerProfile = await this.Profile.findOne({
@@ -89,6 +95,8 @@ class ProfilesDataSource extends DataSource {
 
     return { edges, pageInfo };
   }
+
+  // UPDATE
 
   async addToNetwork(accountId, accountIdToFollow) {
     return await this.Profile.findOneAndUpdate(
@@ -139,6 +147,8 @@ class ProfilesDataSource extends DataSource {
       }
     );
   }
+
+  // DELETE
 
   async deleteProfile(accountId) {
     try {
