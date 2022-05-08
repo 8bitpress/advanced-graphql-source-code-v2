@@ -99,6 +99,10 @@ class ProfilesDataSource extends DataSource {
   // UPDATE
 
   async addToNetwork(accountId, accountIdToFollow) {
+    if (accountId === accountIdToFollow) {
+      throw new UserInputError("User cannot be added to their own network.");
+    }
+
     return await this.Profile.findOneAndUpdate(
       { accountId },
       { $addToSet: { network: accountIdToFollow } },
