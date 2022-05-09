@@ -1,0 +1,10 @@
+services:
+  apollo-router:
+    image: ghcr.io/apollographql/router:v0.1.0-preview.7
+    container_name: apollo-router
+    env_file:
+      - ./.env
+    volumes:
+      - ./router.yaml:/dist/config/router.yaml
+    ports:
+      - "5000:5000"

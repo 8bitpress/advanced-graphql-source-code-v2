@@ -1,0 +1,11 @@
+server:
+  listen: 0.0.0.0:5000
+  cors:
+    origins:
+      - https://studio.apollographql.com
+    allow_headers: [Content-Type, Authorization]
+override_subgraph_url:
+  accounts: http://host.docker.internal:4001
+  profiles: http://host.docker.internal:4002
+  bookmarks: http://host.docker.internal:4003
+  workflows: http://host.docker.internal:4004
