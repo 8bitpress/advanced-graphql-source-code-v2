@@ -4,6 +4,10 @@ server:
     origins:
       - https://studio.apollographql.com
     allow_headers: [Content-Type, Authorization]
+headers:
+  all:
+    - propagate:
+        named: "user"
 override_subgraph_url:
   accounts: http://host.docker.internal:4001
   profiles: http://host.docker.internal:4002
