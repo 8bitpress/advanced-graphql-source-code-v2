@@ -149,7 +149,7 @@ class ProfilesDataSource extends DataSource {
       {
         new: true
       }
-    );
+    ).exec();
   }
 
   // DELETE
