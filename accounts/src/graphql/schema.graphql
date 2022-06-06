@@ -8,7 +8,7 @@ scalar DateTime
 # OBJECTS
 
 """
-An account is unique Auth0 user.
+An account is a unique Auth0 user.
 """
 type Account @key(fields: "id") {
   "The unique ID associated with the account."

@@ -4,7 +4,7 @@ Require a user to be authenticated to use the field.
 directive @private on FIELD_DEFINITION
 
 """
-Require an authenticated user be the owner of the resource to use the field.
+Require an authenticated user to be the owner of the resource to use the field.
 """
 directive @owner(
   """

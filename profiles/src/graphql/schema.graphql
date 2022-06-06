@@ -28,7 +28,7 @@ enum ProfileOrderBy {
 # OBJECTS
 
 """
-An account is unique Auth0 user.
+An account is a unique Auth0 user.
 """
 type Account @key(fields: "id") {
   id: ID!

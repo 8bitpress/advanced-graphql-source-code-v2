@@ -29,7 +29,7 @@ enum BookmarkOrderBy {
 # OBJECTS
 
 """
-An account is unique Auth0 user.
+An account is a unique Auth0 user.
 """
 type Account @key(fields: "id") {
   id: ID!
@@ -169,7 +169,7 @@ type Query {
   searchBookmarks(
     after: String
     first: Int
-    "The text string to search for in bookmark title or notes."
+    "The text string to search for in bookmark title."
     query: String!
   ): BookmarkConnection
 }
