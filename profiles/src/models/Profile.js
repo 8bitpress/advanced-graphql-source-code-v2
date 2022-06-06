@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const profileSchema = new mongoose.Schema({
   accountId: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   createdAt: {
     type: Date,
