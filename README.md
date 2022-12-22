@@ -2,7 +2,7 @@
 
 This repo contains the completed files for the federated GraphQL API built throughout the second edition of the _Advanced GraphQL with Apollo_ book from 8-Bit Press.
 
-**[Get the book package here.](https://8bit.press/book/advanced-graphql)**
+**[Get the book package here.](https://github.com/8bitpress/advanced-graphql-v2)**
 
 ---
 
